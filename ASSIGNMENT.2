@@ -1,0 +1,130 @@
+from keras.models import Sequential
+from keras.layers import Dense, Conv2D, Flatten, MaxPool2D
+from keras.datasets import fashion_mnist
+
+
+(x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
+
+
+x_train.shape
+
+x_test.shape
+
+
+img = x_train[0]
+
+
+img
+
+
+import matplotlib.pyplot as plt
+
+
+plt.imshow(img, cmap='gray');
+
+img = x_train[1]
+plt.imshow(img, cmap='gray');
+
+
+img = x_train[7000]
+plt.imshow(img, cmap='gray');
+
+
+y_train
+
+
+labels = ['T-shirt/Top','Trouser','Pullover','Dress','Coat','Sandal','Shirt','Sneaker','Bag','Ankle boot']
+
+
+plt.figure(figsize=(10,10))
+for i in range(25):
+    plt.subplot(5,5,i+1)
+    plt.xticks([])
+    plt.yticks([])
+    plt.title(labels[y_train[i]])
+    plt.imshow(x_train[i], cmap = 'gray')
+
+
+import pandas as pd 
+pd.Series(y_train).value_counts()
+
+
+
+# one hot encoding of output variable
+from keras.utils import to_categorical
+y_train_new = to_categorical(y_train)
+y_test_new = to_categorical(y_test)
+
+
+#C.Define the network architecture using keras
+import numpy as np
+
+
+arr = np.array([[6,7,8],[8,4,2],[0,1,2]])
+arr
+
+
+arr.flatten()
+
+
+
+from keras.layers import Dense, Input,Conv2D, Flatten, MaxPool2D
+
+
+
+#Create the object of neural network
+model = Sequential()
+
+# Add the input layer
+model.add(Input((28,28,1)))
+
+#Add Convolutional layer-1
+model.add(Conv2D(filters=32, kernel_size=(3,3), activation='relu'))
+
+#Pooling layer - 1
+model.add(MaxPool2D(pool_size=(2,2)))
+
+#Add convolutional layer -2 
+model.add(Conv2D(filters=16, kernel_size=(3,3), activation='relu'))
+
+#Pooling layer -2
+model.add(MaxPool2D(pool_size=(2,2)))
+
+#Add Flatten layer
+model.add(Flatten())
+
+#Add Hidden layer
+model.add(Dense(128, activation='relu'))
+
+#Add output layer 
+model.add(Dense(10, activation='softmax'))
+
+
+
+
+model.summary()
+
+
+from keras.optimizers import SGD
+
+
+model.compile(loss = 'categorical_crossentropy', optimizer=SGD(),
+               metrics = ['accuracy'])
+
+
+
+history = model.fit(x_train, y_train_new, epochs=10, batch_size=10)
+
+
+model.evaluate(x_test, y_test_new, batch_size=1)
+
+
+
+history.history
+
+
+
+
+
+
+
