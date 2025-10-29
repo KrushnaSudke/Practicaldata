@@ -1,0 +1,132 @@
+sent1 = 'It is good for our progress'
+sent2 = 'They have decided decided that it was not good'
+
+
+from sklearn.feature_extraction.text import CountVectorizer
+
+cvt = CountVectorizer()
+
+vect = cvt.fit_transform([sent1, sent2])
+
+import pandas as pd
+
+df = pd.DataFrame(vect.toarray(), columns=cvt.get_feature_names_out())
+df
+
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+lines = ['It was a nice rainy day.','The things are so beautiful in his point',
+         'When your focus is clear, you won.',
+         'Many many happy returns of the day.']
+
+
+
+  lines[0].split()
+
+lines[0].split()
+
+tokenizer.word_counts
+
+tokenizer.word_index
+
+mat = tokenizer.texts_to_matrix(lines)
+mat
+
+seq = tokenizer.texts_to_sequences(lines)
+seq
+
+padded = pad_sequences(seq, maxlen=10, padding='pre')
+padded
+
+import pandas as pd
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, LSTM, Dense
+from sklearn.model_selection import train_test_split
+import re
+import numpy as np
+
+data = pd.read_csv("twitter_sentiments.csv",names=['id','loc','label','text'])
+
+data
+
+data.shape
+
+data.dtypes
+
+data['text'] = data['text'].astype(str)
+
+# Text cleaning
+def clean_text(text):
+    text = text.lower() 
+    text = re.sub(r"[^a-zA-Z]+", " ", text)
+    return text
+
+    clean_text("Hello friends! How are you?? Welcome..62782!!!")
+
+    data['text'] = data['text'].apply(clean_text)
+
+    data
+
+    comments = data['text'].tolist()
+targets = data['label'].values
+
+pd.DataFrame(targets).value_counts()
+
+# Tokenization and padding
+tokenizer = Tokenizer(num_words=5000)
+tokenizer.fit_on_texts(comments)
+sequences = tokenizer.texts_to_sequences(comments)
+padded_sequences = pad_sequences(sequences, maxlen=200)
+
+padded_sequences
+
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+y = le.fit_transform(targets)  Do Space enter 
+from keras.utils import to_categorical
+y_new = to_categorical(y)
+
+y_new
+
+
+x_train, x_test, y_train, y_test = train_test_split(
+    padded_sequences, y_new, test_size=0.2, random_state=0
+)
+
+
+x_train.shape
+
+
+x_test.shape
+
+
+model = Sequential()
+model.add(Embedding(5000,128, input_length=200))
+model.add(LSTM(64))
+model.add(Dense(4, activation="softmax"))
+
+
+model.compile(loss="categorical_crossentropy",
+              optimizer="adam", metrics=["accuracy"])
+
+
+model.fit(x_train, y_train, epochs=3, batch_size=32)
+
+
+new_comment = "I hate him."
+new_sequence = tokenizer.texts_to_sequences([clean_text(new_comment)])
+padded_new_sequence = pad_sequences(new_sequence, maxlen=200)
+prediction = model.predict(padded_new_sequence)[0]
+
+
+prediction 
+
+
+le.inverse_transform([np.argmax(prediction)])[0]
+
+
+new_comment =
+
+
+    
