@@ -1,0 +1,129 @@
+Import required data 
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+from tensorflow import keras 
+from keras import layers 
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+import matplotlib.pyplot as plt
+
+Upload the data 
+np.random.seed(0)
+# Generate normal data points cenetered around a mean
+normal_data =  np.random.normal(loc=0.5, scale=0.1, size=(1000,2))
+
+# Generate anomaly data points, clearly destinct from the normal data
+anomalies = np.random.uniform(low=0.0, high=1.0, size=(50, 2))
+
+normal_data.shape
+
+normal_data
+
+import seaborn as sns
+
+
+sns.kdeplot(normal_data[:,1])
+
+row_mask = np.any((anomalies <0.2) | (anomalies > 0.8), axis=1)
+anomalies = anomalies[row_mask]
+ Space is but one command 
+#Combine into a single dataset
+data = np.vstack([normal_data, anomalies])
+labels = np.array([0] * len(normal_data) + [1] * len(anomalies))
+
+
+row_mask
+
+anomalies
+
+x = np.array([[5,6],[7,8]])
+y = np.array([[1,2],[4,8]])
+
+x
+
+y
+
+
+np.vstack([x,y])
+
+
+data.shape
+
+labels.shape
+
+pd.Series(labels).value_counts()
+
+
+#Scale the data to be between 0 and 1
+scaler = MinMaxScaler()
+data_scaled = scaler.fit_transform(data)
+
+
+# We will train the autoencoder only on the normal data
+
+train_data = data_scaled[labels ==0]
+test_data = data_scaled # The full data set for testing 
+test_labels = labels
+
+
+sns.kdeplot(test_data[:,1])
+
+
+input_dim = train_data.shape[1]
+latent_dim = 1  # The compressed dimention
+
+
+
+class Autoencoder(keras.Model):
+    def __init__(self, input_dim, latent_dim):
+        super(Autoencoder, self).__init__()
+        self.latent_dim = latent_dim
+        # c. Encoder converts X into latent representation
+        self.encoder = keras.Sequential([
+            layers.Dense(8, activation='relu', input_shape=(input_dim,)),
+            layers.Dense(4, activation='relu'),
+            layers.Dense(latent_dim, activation='relu'),
+        ])
+        # d. Decoder networks convert it back to the original input
+        self.decoder = keras.Sequential([
+            layers.Dense(4, activation='relu'),
+            layers.Dense(8, activation='relu'),
+            layers.Dense(input_dim, activation='sigmoid')  # Sigmoid for output between 0 and 1
+        ])
+
+    def call(self, x):
+       encoded = self.encoder(x)
+       decoded = self.decoder(encoded)
+       return decoded
+
+
+
+
+autoencoder = Autoencoder(input_dim, latent_dim)
+
+
+autoencoder.compile(optimizer='adam',loss='mae',metrics=['mae'])
+
+
+
+history = autoencoder.fit(train_data, train_data, epochs=50, batch_size=5)
+
+
+reconstructions = autoencoder.predict(test_data, batch_size=1)
+
+
+
+reconstructions
+
+
+test_data
+
+
+
+
+
+
+
+
+
