@@ -1,0 +1,87 @@
+from keras.applications.resnet50 import ResNet50
+from keras.applications.resnet50 import decode_predictions
+from keras.applications.resnet50 import preprocess_input
+from keras.preprocessing.image import load_img, img_to_array
+
+
+resnet50 = ResNet50()
+
+
+##### A. Load in a pre-trained CNN model trained on a large dataset.
+
+
+img = load_img('cat.webp', target_size=(224,224))
+
+
+img = img_to_array(img)
+
+
+img = img.reshape(1, 224,224,3)
+
+
+img.shape
+
+
+img = preprocess_input(img)
+
+
+pred = resnet50.predict(img)
+
+
+pred;
+
+
+decode_predictions(pred)
+
+
+##### B.Freeze parameters in models lower convolutional layers
+
+from keras.utils import plot_model
+
+
+plot_model(resnet50, show_layer_names=True, show_trainable=True)
+
+
+resnet50.trainable
+
+
+labels = ['Airplane','Automobile','Bird','Cat','Deer','Dog','Frog','Horse','Ship','Truck']
+
+
+resnet50 = ResNet50(include_top=False, input_shape=(32,32,3))
+
+
+from keras.layers import Flatten,Dense
+
+
+
+##### Flatten output layer to ResNet
+
+flattened = Flatten()(resnet50.output)
+
+#Fully connected layer -1
+fc1 = Dense(128, activation='relu', name="AddedDense1")(flattened)
+
+
+##Fully connected layer, output layer
+fc2 = Dense(10, activation='softmax',name="AddedDense2")(fc1)
+
+
+
+resnet50.trainable = False
+
+
+from keras.models import Model
+
+
+model = Model(inputs = resnet50.inputs, outputs=fc2)
+
+
+
+
+
+
+
+
+
+
