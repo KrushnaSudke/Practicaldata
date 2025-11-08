@@ -25,6 +25,8 @@ import seaborn as sns
 
 sns.kdeplot(normal_data[:,1])
 
+sns.kdeplot(normal_data[:,0])
+
 row_mask = np.any((anomalies <0.2) | (anomalies > 0.8), axis=1)
 anomalies = anomalies[row_mask]
  Space is but one command 
