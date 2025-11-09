@@ -3,7 +3,7 @@ from keras.layers import Dense, Input, Conv2D, MaxPool2D, Flatten
 from keras.utils import to_categorical
 from keras.utils import plot_model
 
-
+A.Loading and preprocessing the image data 
 from keras.datasets import cifar10
 
 
@@ -85,7 +85,7 @@ model.add(Dense(10, activation='softmax'))
 
 model.summary()
 
-
+C.Training the model
 plot_model(model, show_layer_activation=True, show_layer_names=True,
            show_shapes=True)
 
@@ -98,7 +98,10 @@ model.compile(loss = 'categorical_crossentropy', optimizer='adam',
 model.fit(x_train, y_train_new, epochs=10, batch_size=10)
 
 
+y_train_new.shape
 
+
+D.Estimate the models Performance 
 model.evaluate(x_test, y_test_new, batch_size=1)
 
 
