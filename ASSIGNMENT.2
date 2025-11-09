@@ -1,8 +1,9 @@
+A.import the necessary packages 
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, Flatten, MaxPool2D
 from keras.datasets import fashion_mnist
 
-
+B.Load the training and testing data(Mnist)
 (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
 
 
@@ -104,7 +105,7 @@ model.add(Dense(10, activation='softmax'))
 
 model.summary()
 
-
+D.Train the model using SGD
 from keras.optimizers import SGD
 
 
@@ -116,11 +117,21 @@ model.compile(loss = 'categorical_crossentropy', optimizer=SGD(),
 history = model.fit(x_train, y_train_new, epochs=10, batch_size=10)
 
 
+E.Evaluate the network 
 model.evaluate(x_test, y_test_new, batch_size=1)
 
 
 
 history.history
+
+
+F.Plot the training loss and accuracy
+plt.title('plot of accuracy and training loss')
+plt.xlabel('Epochs')
+plt.grid()
+plt.plot(range(1,11),history.history['accuracy'],color='r',label='accuracy',ls="--")
+plt.plot(range(1,11),history.history['loss'],ls="--",color='g',label='loss')
+plt.legend()
 
 
 
