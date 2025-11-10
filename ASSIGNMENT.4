@@ -1,4 +1,4 @@
-Import required data 
+# A.Import required data 
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -15,6 +15,7 @@ normal_data =  np.random.normal(loc=0.5, scale=0.1, size=(1000,2))
 
 # Generate anomaly data points, clearly destinct from the normal data
 anomalies = np.random.uniform(low=0.0, high=1.0, size=(50, 2))
+
 
 normal_data.shape
 
@@ -68,8 +69,6 @@ train_data = data_scaled[labels ==0]
 test_data = data_scaled # The full data set for testing 
 test_labels = labels
 
-
-sns.kdeplot(test_data[:,1])
 
 
 input_dim = train_data.shape[1]
